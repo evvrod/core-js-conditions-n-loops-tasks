@@ -428,23 +428,18 @@ function sortByAsc(currentArr) {
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
 function shuffleChar(str, iterations) {
-  let copyStr = new Array(str.length);
-  for (let i = 0; i < str.length; i += 1) {
-    copyStr[i] = str[i];
-  }
+  let copyStr = str;
   for (let i = 0; i < iterations; i += 1) {
-    const newStr = new Array(str.length);
+    let strLeft = '';
+    let strRight = '';
     for (let j = 0; j < str.length / 2; j += 1) {
-      newStr[j] = copyStr[(j - 1) * 2 + 2];
-      newStr[str.length / 2 + j] = copyStr[(j - 1) * 2 + 3];
+      strLeft += copyStr[(j - 1) * 2 + 2];
+      strRight += copyStr[(j - 1) * 2 + 3];
     }
-    copyStr = newStr;
+    copyStr = strLeft + strRight;
+    if (copyStr === str) return shuffleChar(copyStr, iterations % (i + 1));
   }
-  let final = '';
-  for (let i = 0; i < str.length; i += 1) {
-    final += copyStr[i];
-  }
-  return final;
+  return copyStr;
 }
 
 /**
