@@ -39,7 +39,9 @@ function isPositive(number) {
  *  -0.1, 0, 0.2  => 0.2
  */
 function getMaxNumber(a, b, c) {
-  return Math.max(a, b, c);
+  if (a > b && a > c) return a;
+  if (b > a && b > c) return b;
+  return c;
 }
 
 /**
@@ -123,7 +125,13 @@ function isIsoscelesTriangle(a, b, c) {
 function convertToRomanNumerals(num) {
   const mas = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
   if (num <= 10) return mas[num - 1];
-  return 'X'.repeat(Math.trunc(num / 10)) + mas[(num % 10) - 1];
+  let x = '';
+  let i = 0;
+  while (i < Math.trunc(num / 10)) {
+    x += 'X';
+    i += 1;
+  }
+  return x + mas[(num % 10) - 1];
 }
 
 /**
@@ -155,7 +163,7 @@ function convertNumberToString(numberStr) {
     'nine',
   ];
   let str = '';
-  for (let i = 0; i < numberStr.length; i += 1) {
+  for (let i = 0; i < numberStr.length - 1; i += 1) {
     switch (numberStr[i]) {
       case '-':
         str += 'minus ';
@@ -170,7 +178,20 @@ function convertNumberToString(numberStr) {
         str += `${mas[numberStr[i]]} `;
     }
   }
-  return str.trim();
+  switch (numberStr[numberStr.length - 1]) {
+    case '-':
+      str += 'minus';
+      break;
+    case '.':
+      str += 'point';
+      break;
+    case ',':
+      str += 'point';
+      break;
+    default:
+      str += `${mas[numberStr[numberStr.length - 1]]}`;
+  }
+  return str;
 }
 
 /**
@@ -443,8 +464,33 @@ function shuffleChar(str, iterations) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  let num = number;
+  let mas = [];
+  while (num >= 10) {
+    mas.push(num % 10);
+    num = Math.trunc(num / 10);
+  }
+  mas.push(num);
+  mas = mas.reverse();
+  let i = mas.length - 1;
+  while (mas[i - 1] >= mas[i]) {
+    i -= 1;
+  }
+
+  const rightMas = mas.splice(i);
+  const zamenaFrome = mas.pop();
+  const leftMas = mas;
+
+  const zamenaTo = Math.min(...rightMas.filter((el) => el > zamenaFrome));
+  leftMas.push(zamenaTo);
+  for (let j = 0; j < rightMas.length; j += 1) {
+    if (rightMas[j] === zamenaTo) {
+      rightMas[j] = zamenaFrome;
+      break;
+    }
+  }
+  return Number([...leftMas, ...rightMas.sort()].join(''));
 }
 
 module.exports = {
